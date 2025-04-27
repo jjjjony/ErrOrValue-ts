@@ -3,7 +3,7 @@ import { MessageSchema } from "./Message";
 
 export function getApiPayloadSchema<T extends z.ZodTypeAny>(valueSchema: T) {
   return z.object({
-    value: valueSchema.optional(),
+    value: valueSchema,
     messages: z.array(MessageSchema),
   });
 }
