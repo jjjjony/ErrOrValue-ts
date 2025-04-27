@@ -6,10 +6,8 @@ import { Message, Severity } from "../../modules/ApiPayload";
 export class ErrOr<T = void> {
   public messages: Message[] = [];
   public code: StatusCodes = StatusCodes.OK;
-  public traceId: string; // to correlation user's journey
-
-  // For TS-intellisense, mark value as never if no generic was supplied
-  public value!: T extends void ? never : T | undefined;
+  public traceId: string; // to correlate the user's journey
+  public value!: T extends void ? never : T | undefined; // for TS-intellisense, mark value as never if no generic was supplied
 
   constructor(traceId?: string) {
     this.traceId = traceId ?? "none";
@@ -22,9 +20,9 @@ export class ErrOr<T = void> {
    *
    * Also tell TS-intellisense that value is defined if using overload 3
    */
-  public isOk(): boolean; // Overload 1: No arguments
-  public isOk(withValue: false): boolean; // Overload 2: withValue = false
-  public isOk(withValue: true): this is ErrOr<T> & { value: T }; // Overload 3: withValue = true
+  public isOk(): boolean;                                         // Overload 1: No arguments
+  public isOk(withValue: false): boolean;                         // Overload 2: withValue = false
+  public isOk(withValue: true): this is ErrOr<T> & { value: T };  // Overload 3: withValue = true
   public isOk(withValue: boolean = false): boolean {
     const hasErrors = this.messages.some((m) => m.severity === Severity.error);
     const isValidStatusCode = this.code >= 200 && this.code <= 299;
